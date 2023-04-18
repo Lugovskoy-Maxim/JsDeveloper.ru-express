@@ -16,6 +16,7 @@ const messages = {
     unauthorized: 'Необходима авторизация',
     noPage: 'Запрашиваемая страница не найдена',
     notURL: 'Ссылка должна быть http(s)-URL',
+    notNickName: 'Никнейм должен состоять ьлдбкл из латинских букв или цифр',
     notEmail: 'Почта должна быть вида example@domain.ru',
   },
   user: {
