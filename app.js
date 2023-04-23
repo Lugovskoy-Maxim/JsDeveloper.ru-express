@@ -1,19 +1,12 @@
-require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const centralizedErrorsHandler = require('./errors/centralizedErrorsHandler');
-const { configByEnv } = require('./utils/constants');
+const { CONFIG_ENV } = require('./utils/config');
 const { requestLogger, errorLogger } = require('./middlewares/loggers');
 const rateLimiter = require('./middlewares/ratelimiter');
-const { messages } = require('./errors');
-
 const corsMiddleware = require('./middlewares/cors');
-
-const { PORT = 3001, NODE_ENV, MONGO_URL_PROD } = process.env;
-const MONGO_URL = NODE_ENV
-  ? MONGO_URL_PROD
-  : configByEnv.development.MONGO_URL_DEV;
+const indexRouter = require('./routes/index');
 
 const app = express();
 // app.use(helmet);
@@ -22,16 +15,15 @@ app.use(corsMiddleware);
 app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-mongoose.connect(MONGO_URL);
-
+mongoose.connect(CONFIG_ENV.MONGO_URL);
+app.use(indexRouter);
 
 
 app.use(errorLogger);
 app.use(centralizedErrorsHandler);
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
+app.listen(CONFIG_ENV.PORT, () => {
   console.log(
-    `App started ${PORT}, type: ${NODE_ENV ? 'productions' : 'development'} `
+    `Приложение заупущено на порту: ${CONFIG_ENV.PORT}, режим: ${CONFIG_ENV.NODE_ENV} `
   );
 });
 
