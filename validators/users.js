@@ -29,7 +29,4 @@ module.exports = {
   segmentBodyProfile,
   segmentBodyAuth,
   segmentBodyUser,
-  celebrateBodyProfile,
-  celebrateBodyAuth,
-  celebrateBodyUser,
 };
