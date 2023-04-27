@@ -10,9 +10,9 @@ const indexRouter = require('./routes/index');
 
 const app = express();
 // app.use(helmet);
+app.use(requestLogger);
 app.use(rateLimiter);
 app.use(corsMiddleware);
-app.use(requestLogger);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.connect(CONFIG_ENV.MONGO_URL);
