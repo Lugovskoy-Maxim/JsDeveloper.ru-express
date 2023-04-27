@@ -3,24 +3,26 @@ const bcrypt = require('bcryptjs');
 const { schemaEmail } = require('../validators/users')
 const { messages } = require('../errors/index');
 const { Schema } = mongoose;
+const { AuthError } = require('../errors/index');
+const { ERROR_404_USER, ERROR_401_BAD_REQ_MESSAGE } = require('../utils/constants');
 
-const schema = new Schema({
+const userSchema = new Schema({
   name: {
     type: String,
     required: true,
     minLength: 2,
     maxLength: 30,
   },
-  nickName: {
+  nickname: {
     type: String,
     required: true,
     unique: true,
     minlength: 3,
     maxlength: 18,
-    validate: {
-      validator: (value) => /[a-zA-Z0-9_]/gm.test(value),
-      message: () => messages.app.notNickName,
-    },
+    // validate: {
+    //   validator: (value) => /[a-zA-Z0-9_]/gm.test(value),
+    //   message: () => messages.app.notNickName,
+    // },
   },
   savedPost: {
     type: Array,
@@ -57,12 +59,12 @@ const schema = new Schema({
         .select('+password')
         .then((user) => {
           if (!user) {
-            // throw notFoundError;
+            throw new AuthError(ERROR_401_BAD_REQ_MESSAGE);
           }
           return bcrypt.compare(password, user.password)
             .then((isSuccess) => {
               if (!isSuccess) {
-                // throw unauthorizedError;
+                throw new AuthError(ERROR_401_BAD_REQ_MESSAGE);
               }
               const { password: removed, ...fields } = user.toObject();
               return fields;
@@ -72,4 +74,4 @@ const schema = new Schema({
   },
 });
 
-export const User = mongoose.model('User', schema);
+module.exports = mongoose.model('User', userSchema);
