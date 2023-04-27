@@ -28,8 +28,14 @@ const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
 }
 
+const ERROR_401_BAD_REQ_MESSAGE = 'Неверный логин или пароль, проверте правильность введёных данных и попторите попытку снова';
+const ERROR_404_USER = 'Неверный логин или пароль, проверте правильность введёных данных и попторите попытку снова';
+
 module.exports = {
   HTTP_STATUS,
   ROUTE,
   HTTP_METHOD,
+  ERROR_401_BAD_REQ_MESSAGE,
+  ERROR_404_USER,
+
 };
