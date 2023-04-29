@@ -79,7 +79,7 @@ module.exports.login = (req, res, next) => {
 
 module.exports.signout = (req, res) => {
   res.clearCookie('auth').send({ message: messages.notification.signout });
-}
+};
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
@@ -156,17 +156,55 @@ module.exports.savePost = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(new NotFoundError(ERROR_404_USER_MESSAGE))
     .then((user) => {
-      const newSavedPosts = [{postId: postId, date: new Date(), postOwner: postOwner, category: category}, ...user.savedPost];
+      const newSavedPosts = [
+        {
+          postId: postId,
+          date: new Date(),
+          postOwner: postOwner,
+          category: category,
+        },
+        ...user.savedPost,
+      ];
       User.findByIdAndUpdate(
         req.user._id,
         { savedPost: newSavedPosts },
         { new: true, runValidators: true }
       )
         .then((user) => {
-          console.log(user);
+          res.status(200).send({user})
         })
-        .catch((err) => console.log('err1' + err));
+        .catch((err) => {
+          if (err.name === 'CastError' || err.name === 'ValidationError') {
+            next(new BadRequestError(ERROR_400_MESSAGE));
+            return;
+          }
+        });
+    });
+};
+
+module.exports.deleteSavedPost = (req, res, next) => {
+  const { postId } = req.body;
+  User.findById(req.user._id)
+    .orFail(new NotFoundError(ERROR_404_USER_MESSAGE))
+    .then((user) => {
+      const userSavedPosts = user.savedPost;
+      const resultArray = userSavedPosts.filter((obj) => {
+        return obj.postId !== postId;
+      })
+      User.findByIdAndUpdate(
+        req.user._id,
+        { savedPost: resultArray },
+        { new: true, runValidators: true }
+      )
+        .then((user) => {
+          res.status(200).send({user})
+        })
+        .catch((err) => {
+          if (err.name === 'CastError' || err.name === 'ValidationError') {
+            next(new BadRequestError(ERROR_400_MESSAGE));
+            return;
+          }
+        });
     })
-    .catch((err) => console.log('err2' + err));
-    next(err);
+    .catch((err) => console.log('123'));
 };
