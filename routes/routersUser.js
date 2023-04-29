@@ -9,14 +9,14 @@ const {
   updateUser,
   getUserInfo,
   deleteWithDelay,
-  // savePost,
+  savePost,
   // deleteSavePost,
 } = require('../controllers/users');
 
 router.get('/users/me', getUserInfo);
 router.get('/users/:id', findUserById);
 router.patch('/users/me', updateUser);
-// router.patch('/users/savedPost', savePost);
+router.patch('/users/me/savedPost', savePost);
 // router.delete('/users/savedPost', deleteSavePost);
 router.delete('/users/:id', deleteWithDelay);
 

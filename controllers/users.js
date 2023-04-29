@@ -7,6 +7,7 @@ const {
   ERROR_404_USER_MESSAGE,
   ERROR_404_USER_BAD_ID_MESSAGE,
   ERROR_409_EMAIL_MESSAGE,
+  DELETE_DATE,
 } = require('../utils/constants');
 const { CONFIG_ENV } = require('../utils/config');
 const {
@@ -31,12 +32,7 @@ module.exports.registrations = (req, res, next) => {
     )
     .then((user) => {
       const registerDateOnly = user.registerDate.getDate;
-      const {
-        password,
-        savedPost,
-        expireAt,
-        ...fields
-      } = user.toObject();
+      const { password, savedPost, expireAt, ...fields } = user.toObject();
       res
         .status(HTTP_STATUS.CREATE)
         .send({ user: fields, message: registerDateOnly });
@@ -81,6 +77,10 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
+module.exports.signout = (req, res) => {
+  res.clearCookie('auth').send({ message: messages.notification.signout });
+}
+
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(new NotFoundError(ERROR_404_USER_MESSAGE))
@@ -99,13 +99,9 @@ module.exports.findUserById = (req, res, next) => {
   User.findById(id)
     .orFail(new NotFoundError(ERROR_404_USER_MESSAGE))
     .then((user) => {
-      const {
-        savedPost,
-        expireAt,
-        password,
-        ...fields
-      } = user.toObject();
-      res.send({user: fields})})
+      const { savedPost, expireAt, password, ...fields } = user.toObject();
+      res.send({ user: fields });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new NotFoundError(ERROR_404_USER_BAD_ID_MESSAGE));
@@ -120,7 +116,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name, email, nickname, avatar },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((user) => res.send({ user }))
     .catch((err) => {
@@ -139,11 +135,11 @@ module.exports.updateUser = (req, res, next) => {
 module.exports.deleteWithDelay = (req, res, next) => {
   const today = new Date().valueOf();
   const daysToRemove = 7;
-  const deleteDate = new Date(today + ((24 * 60 * 60 * 1000) * daysToRemove)); // желаемая дата
+  const deleteDate = new Date(today + 24 * 60 * 60 * 1000 * daysToRemove); // желаемая дата
   User.findByIdAndUpdate(
     req.user._id,
     { expireAt: deleteDate },
-    { new: true, runValidators: true },
+    { new: true, runValidators: true }
   )
     .then((user) => res.send({ message: DELETE_DATE + deleteDate }))
     .catch((err) => {
@@ -153,4 +149,24 @@ module.exports.deleteWithDelay = (req, res, next) => {
       }
       next(err);
     });
+};
+
+module.exports.savePost = (req, res, next) => {
+  const { postId, postOwner, category } = req.body;
+  User.findById(req.user._id)
+    .orFail(new NotFoundError(ERROR_404_USER_MESSAGE))
+    .then((user) => {
+      const newSavedPosts = [{postId: postId, date: new Date(), postOwner: postOwner, category: category}, ...user.savedPost];
+      User.findByIdAndUpdate(
+        req.user._id,
+        { savedPost: newSavedPosts },
+        { new: true, runValidators: true }
+      )
+        .then((user) => {
+          console.log(user);
+        })
+        .catch((err) => console.log('err1' + err));
+    })
+    .catch((err) => console.log('err2' + err));
+    next(err);
 };
