@@ -112,10 +112,10 @@ module.exports.findUserById = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
-  const { name, email, nickname, avatar } = req.body;
+  const { name, email, nickname, avatar, expireAt } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { name, email, nickname, avatar },
+    { name, email, nickname, avatar, expireAt },
     { new: true, runValidators: true }
   )
     .then((user) => res.send({ user }))
