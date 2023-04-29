@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const centralizedErrorsHandler = require('./errors/centralizedErrorsHandler');
 const { CONFIG_ENV } = require('./utils/config');
 const { requestLogger, errorLogger } = require('./middlewares/loggers');
@@ -8,10 +9,13 @@ const rateLimiter = require('./middlewares/ratelimiter');
 const corsMiddleware = require('./middlewares/cors');
 const indexRouter = require('./routes/index');
 
+
 const app = express();
+
 // app.use(helmet);
 app.use(requestLogger);
 app.use(rateLimiter);
+app.use(cookieParser());
 app.use(corsMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
