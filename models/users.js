@@ -51,6 +51,10 @@ const userSchema = new Schema({
     select: false,
     minLength: 8,
   },
+  expireAt: { // если передать дату то запись будет удалена
+    type: Date,
+    index: { expires: 1 },
+  },
 }, {
   versionKey: false,
   statics: {

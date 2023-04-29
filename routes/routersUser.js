@@ -4,14 +4,20 @@ const router = require('express').Router();
 //   // validateUserId
 // } = require('../middlewares/validation');
 
-// const {
-//   // findUserbyId,
-//   updateUser,
-//   getUserInfo,
-// } = require('../controllers/users');
+const {
+  findUserById,
+  updateUser,
+  getUserInfo,
+  deleteWithDelay,
+  // savePost,
+  // deleteSavePost,
+} = require('../controllers/users');
 
-// router.get('/users/me', getUserInfo);
-// router.get('/users/:id', findUserbyId);
-// router.patch('/users/me', updateUser);
+router.get('/users/me', getUserInfo);
+router.get('/users/:id', findUserById);
+router.patch('/users/me', updateUser);
+// router.patch('/users/savedPost', savePost);
+// router.delete('/users/savedPost', deleteSavePost);
+router.delete('/users/:id', deleteWithDelay);
 
 module.exports = router;

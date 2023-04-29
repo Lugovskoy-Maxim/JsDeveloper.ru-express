@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { messages } = require('../utils/messages');
 const { NotFoundError } = require('../errors/index');
-const { registrations, login } = require('../controller/users');
+const { registrations, login } = require('../controllers/users');
 const routesUser = require('./routersUser');
 
 router.use('/signin', login);

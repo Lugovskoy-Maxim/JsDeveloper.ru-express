@@ -27,15 +27,22 @@ const HTTP_STATUS = {
   CONFLICT_ERROR: 409,
   INTERNAL_SERVER_ERROR: 500,
 }
-
-const ERROR_401_BAD_REQ_MESSAGE = 'Неверный логин или пароль, проверте правильность введёных данных и попторите попытку снова';
-const ERROR_404_USER = 'Неверный логин или пароль, проверте правильность введёных данных и попторите попытку снова';
+const DELETE_DATE = 'Ваш профиль будет удален через 7 дней,  вы можете отменить удаление в профиле аккаунта. Назначенная дата уделения аккаутна:'
+const ERROR_400_MESSAGE = 'Плохой запрос, проверте введные данные и отправте снова!';
+const ERROR_401_BAD_REQ_MESSAGE = 'Неверный логин или пароль, проверте правильность введёных данных и повторите попытку снова';
+const ERROR_404_USER_MESSAGE = 'Пользователь не найден';
+const ERROR_404_USER_BAD_ID_MESSAGE = 'Пользователь с указаным _id не найден, проверте правильность введёных данных и повторите попытку снова';
+const ERROR_409_EMAIL_MESSAGE = 'При создании возник конфликт с базой данных, пожалуйста измените поле:';
 
 module.exports = {
   HTTP_STATUS,
   ROUTE,
   HTTP_METHOD,
+  DELETE_DATE,
+  ERROR_400_MESSAGE,
   ERROR_401_BAD_REQ_MESSAGE,
-  ERROR_404_USER,
+  ERROR_404_USER_MESSAGE,
+  ERROR_404_USER_BAD_ID_MESSAGE,
+  ERROR_409_EMAIL_MESSAGE,
 
 };
