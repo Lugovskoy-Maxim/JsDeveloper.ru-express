@@ -16,7 +16,7 @@ const auth = (req, res, next) => {
     throw new AuthError(ERROR_401_MESSAGE);
     return;
   }
-  console.log(payload);
+
   req.user = payload; // записываем пейлоуд в объект запроса
 
   return next(); // пропускаем запрос дальше
